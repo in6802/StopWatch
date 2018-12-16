@@ -10,7 +10,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    TextView textViewTime;
+    TextView textViewTime, textViewSave;
     Button buttonStart, buttonPause, buttonReset, buttonSave;
     Handler handler = new Handler();
     private long millsecondTime;
@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private long seconds;
     private long minutes;
     private long milliseconds;
+    private String saveTime ="";
 
 
     @Override
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         textViewTime = findViewById(R.id.textViewTime);
+        textViewSave = findViewById(R.id.textViewSave);
         buttonStart = findViewById(R.id.buttonStart);
         buttonStart.setOnClickListener(this);
         buttonPause = findViewById(R.id.buttonPause);
@@ -59,23 +61,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClickStart(){
         startTime = SystemClock.uptimeMillis();
         handler.postDelayed(runnable, 0);
+        buttonPause.setEnabled(true);
     }
 
     public void onClickPause(){
         timeBuf += millsecondTime;
         handler.removeCallbacks(runnable);
+        buttonPause.setEnabled(false);
     }
 
     public void onClickReset(){
         startTime = SystemClock.uptimeMillis();
         timeBuf = 0;
+        textViewSave.setText("");
+        saveTime = "";
         handler.postDelayed(runnable, 0);
     }
 
     public void onClickSave(){
-        //textViewTime.setText();
-        //handler.postDelayed(this,0);
-
+        saveTime += String.format(minutes + ":" + String.format("%02d", seconds) + ":"
+                + String.format("%03d", milliseconds)) + "\n";
+        textViewSave.setText(saveTime);
+        //handler.postDelayed(runnable,0);
     }
 
     public Runnable runnable = new Runnable() {
@@ -90,3 +97,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 }
+
+
+    /*기본 기능에 충실한 스탑워치입니다.
+        save lap을 클릭하면 중간 시간을 체크할 수 있습니다.*/
+
